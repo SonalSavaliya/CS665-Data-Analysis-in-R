@@ -1,0 +1,235 @@
+---
+title: 'Assignment #3 Answers'
+author: "Sonal Savaliya"
+date: "November 2, 2018"
+output: html_document
+---
+
+### Exploratory Analysis
+
+```{r}
+require('tidyverse', quietly = TRUE)
+ads<-read_csv('classified_ads_for_cars_originial.csv')
+```
+
+Q-1. What is the price of a typical car? And what is the typical deviation from this value? How are the price values are distributed ?
+
+#### Ans-1
+
+```{r}
+mean(ads$price_eur)
+## [1] 12841.99
+sd(ads$price_eur)
+## [1] 13132.85
+abs(mean(ads$price_eur) - ads$price_eur)
+
+hist(ads$price_eur)
+```
+Q-2. What are the variables in the dataset. Which of these variables do you think can play a factor in the car price?
+
+#### Ans-2
+```{r}
+colnames(ads)
+## [1] "maker"               "model"               "mileage"             "manufacture_year"   
+## [5] "engine_displacement" "engine_power"        "transmission"        "door_count"         
+## [9] "seat_count"          "fuel_type"           "date_created"        "date_last_seen"     
+##[13] "views"               "ratings"             "price_eur" 
+
+
+
+```
+
+Ans - maker, model, mileage, manufacture_year, engine power, transmission, fuel_type are also affect on car price.
+
+Q-3. What is the range of the manufactured years ?
+
+#### Ans-3
+```{r}
+range(ads$manufacture_year)
+##[1] 1972 2015
+```
+
+Q-4. how many manufactures are there ?
+
+#### Ans-4
+```{r}
+m = group_by(ads, maker)
+nrow(summarise(m, mean(mileage)))
+## [1] 34 
+
+## OR
+
+n_distinct(ads$maker, na.rm = FALSE)
+## [1] 34
+```
+Q-5. What are the fuel types of the cars ?
+
+#### Ans-5
+```{r}
+fuelType = group_by(ads, fuel_type)
+
+#Below both work
+ads %>% distinct(fuel_type)
+
+## OR
+
+summarise(fuelType)
+```
+
+Q-6. Create a variable called age and calculate it as 2018 - manufacture year.
+
+#### Ans-6
+```{r}
+require(lattice)
+age = 2018 - ads$manufacture_year
+ads = mutate(ads, age)
+
+histogram(~age, data=ads)
+```
+
+Q-7. Let's explore the age variable
+What is the age range?
+What is the typical price for a 5 year old car and
+What is the typical price ofr a 15 year old car?
+Based on the answers above, what can we say about the relationship with car price and car age.
+
+#### Ans-7
+```{r}
+range(ads$age)
+## [1]  3 46
+```
+
+```{r}
+
+age_at_five = filter(ads, age == 5)
+
+mean(age_at_five$price_eur)
+## [1] 20726.04 
+
+## OR
+
+mean(ads[age == 5,]$price_eur)
+## [1] 20726.04
+
+bwplot(age~price_eur, data = age_at_five)
+
+```
+
+```{r}
+age_at_five = filter(ads, age == 15)
+mean(age_at_five$price_eur)
+## [1] 4924.121
+
+## OR
+
+mean(ads[age == 15,]$price_eur)
+## [1] 4924.121
+```
+Yongest cars' average are more expensive than oldest cars' average. So we can say if car is yongest, its price is high. If car is old, its price is low.
+
+
+Q-8. Based on your previous answer, would you agree that the lowest price average should be for the oldest cars? Let's see if this true.
+First find the oldest age among cars.
+
+What price is for the oldest car? Is it more or less expansive than a 5 year old car ?
+
+#### Ans-8
+
+ yes, based on previous answers. We can say that the lowest price average should be for the oldest cars.
+
+```{r}
+
+oldest_car = max(ads$age)
+oldest_car
+## [1] 46
+
+filter(ads,age == oldest_car)$price_eur
+## [1] 12903.81
+
+```
+
+Oldest car's price is less expensive than average price of 5 year old cars.
+
+
+Q-9. To better understand the relationship between the age of a car and the price, let's look at the price averages for each manufacture year. Try to replicate the table below (your table will probably be longer, the table below shows only first 6 rows of the actual table). Hint The table groups the data by the age first than summarizes each group by the average price with in the group.
+
+What does this table tell you ? Do we need to re-evaluate our assumption about younger cars always more expensive?
+
+#### Ans-9
+```{r}
+car_age = group_by(ads, age)
+
+summarise(car_age, mean(price_eur) )
+
+
+
+histogram(~ads$price_eur, ads$age, data = ads)
+
+```
+
+
+I believe, car's price depends on many other factors except age like car brand name, transmission, fuel type etc.
+
+However, based on above table, we can say that if car's age is less, then its price is high. Oldest car has lowest price. However, in this table, last value, car's age is 46 and its price is high like yongest. So we can consider it as outlier.
+
+No, don't need to re-evaluate. We can see in the table that yogest cars always more  expensive. and it makes sense.
+
+
+Q-10. Which manufacturers on average produce the most expensive cars(look at the top 10 manufactures)? Hint You will need to group the data by the manufacture then summarize each group by the average price.
+
+#### Ans-10
+```{r}
+maker_group = group_by(ads, maker)
+
+maker_avrg = summarise(maker_group, average = mean(price_eur))
+
+desc_avrg = arrange(maker_avrg, desc(average))
+
+desc_avrg  %>% top_n(10)
+```
+Q-11. Judging by the averages above, there seems to be a big difference between the (between lamborgini and bentley) averages.
+How many Lamborghinis are there in the dataset?
+
+There seems to be a big drop in the prices between proche and bmw. How many cars are from 'lamborghini','bentley','maserati',or 'porsche'. Hint This can be done in a few ways. 
+
+#### Ans-11
+```{r}
+nrow(filter(ads, maker == "lamborghini"))
+## [1] 1
+```
+
+```{r}
+big_drop_mkaers = filter(ads, maker == "lamborghini" | maker == "bentley" | maker == "maserati" | maker == "porsche")
+
+nrow(big_drop_mkaers)
+## [1] 44             
+
+## OR 
+
+top_manuf=c('lamborghini','bentley','maserati','porsche')
+total_makers = filter(ads, maker %in% top_manuf)
+NROW(total_makers)
+## [1] 44
+```
+
+Q-12. How does transmission type effect the price ? Are manual cars or automatic cars more expensive ?
+
+#### Ans-12
+```{r}
+
+## Manual cars more expensive because manual cars are a lot easier and convenient to drive compare to manual cars. In Auto transmission, we do not have to worried about managing gears and clutch.
+
+
+```
+
+Q-13. How does the fuel type affect the prices ? Which of the two are typically more expensive diesel cars or gasoline cars ?
+
+#### Ans-13
+```{r}
+
+## diesel cars usually cost more than petrol. Diesel fuel is more expensive than petrol and servicing or fixing a serious problem on a diesel car might be slightly more expensive. New diesel cars also cost more to tax than petrol cars. Diesel cars need less fuel than gas (patrol) cars. Gas cars omit more CO2 than diesel cars.
+
+```
+
+
+

@@ -1,0 +1,216 @@
+---
+title: "Assignment1 R-Basics"
+output:
+html_document: default
+autor: Sonal Savaliya
+---
+
+
+**1.** 
+1. Suppose you keep track of your mileage each time you fill up your car's gas tank. At your last fill-ups, the
+mileage values were : 65311 , 65624 , 65908 , 66219 , 66499 , 66821 , 67145 , 67447 respectively
+
+**a.** Enter these numbers into an R vector. Use the function diff() on the data. What is the result?
+
+```{r}
+mileage_values = c(65311 , 65624 , 65908 , 66219 , 66499 , 66821 , 67145 , 67447)
+x = diff(mileage_values)
+print(x)
+
+## 313 284 311 280 322 324 302
+```
+Based on the result above, I think the diff() function gives the difference of consecutive numbers of a vector.
+
+
+**b.** Use the function length() to find the lengths of the miles and x vectors. Explain the result.
+
+```{r}
+length(mileage_values) # length of vector
+## 8
+
+length(x)
+## 7
+```
+
+The results suggest that length function returns the length of a vector.
+
+**c.** Use R functions to find the maximum and minimum number of miles between fill-ups, the average number of
+miles between fill-ups, the standard deviation. Hint: Refer Statistical functions in CheatSheet
+
+```{r}
+max(x)
+## 324
+
+min(x)
+## 280
+
+mean(x)
+## 305.1429
+
+sd(x)
+## 17.43969
+```
+
+
+**2.** You have tracked your commute times for two weeks (10 days) and you recorded the following times in minutes:
+17 16 20 24 22 15 21 15 17 22
+    
+**a.**  Enter this into a vector called commute. Use R functions to find the average and a statistical summary.
+
+```{r}
+commute = c(17,16,20,24,22,15,21,15,17,22)
+mean(commute)
+## 18.9
+
+summary(commute)
+##   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  15.00   16.25   18.50   18.90   21.75   24.00 
+```
+
+**b.** Suppose the 24 was a mistake; it should have been 18. How can you fix this? Do so, and then find the new
+average. Hint: Index into the vector, then use an assignment statement to fix this mistake.
+
+```{r}
+commute[4] = 18  #here, commute's 4th value will be change 24 to 18
+mean(commute)
+## 18.3
+```
+
+**c.** How many times was your commute 20 minutes or more?
+
+```{r}
+sum(commute >= 20)
+## 4
+
+# OR
+length(which(commute >= 20))
+## 4
+```
+
+**d.**  What percent of your commutes are less than 17 minutes? How can you answer this with R?
+
+```{r}
+#30% of commutes are less than 17 minutes.
+commute_lessthan_17_per = sum(commute < 17)/length(commute) * 100
+print(commute_lessthan_17_per)
+## 30
+```
+
+**e.** Briefly explain the result of the following commands. Hint: Refer Vector data extraction summary in
+CheatSheet
+- commute + 1
+- commute[-6]
+- sum(commute>21 | commute<16)
+- commute[commute>=17]
+- sum(commute[commute>20])
+- commute[4:6]
+
+```{r}
+commute + 1
+## 18 17 21 19 23 16 22 16 18 23
+```
+The function above adds one to (I almost answer it for you here :-) each element of the vector.
+
+```{r}
+commute[-6]
+## 17 16 20 18 22 21 15 17 22
+```
+The function above removes 6th element of the vector.
+
+```{r}
+sum(commute>21 | commute<16)
+## 4
+```
+The function above returns a set of elements that are greater than 21 and less than 16 from the provided vector. It does not give any elements between 16 to 21 includig 16 and 21. 
+
+```{r}
+commute[commute>=17]
+## 17 20 18 22 21 17 22
+```
+The function above extracts all elements which are greater than and equal to 17 from the vector. 
+
+```{r}
+sum(commute[commute>20])
+## 65
+```
+The function above gives sum of all values which are greater than 20 from the vector.
+```{r}
+commute[4:6]
+## 18 22 15
+```
+The function above gives all element values from 4 to 6 index of the vector.
+
+
+**3.** Let the data x be given by
+
+```{r}
+x = c(1, 8, 2, 6, 3, 8, 5, 5, 5, 5) 
+
+#3.a.
+
+```
+**3.a** (X1 + X2 + X3. . .+X10)/10 use sum
+
+```{r}
+sum(x)/10
+##  4.8
+```
+
+**3.b** Find log10(Xi) for each i. (Use the log function which by default is base e)
+
+```{r}
+log10(x)
+## [1] 0.0000000 0.9030900 0.3010300 0.7781513 0.4771213 0.9030900 0.6989700 0.6989700 0.6989700
+## [10] 0.6989700
+
+```
+
+**3.c** Find (X4.4 )/2.875 for each i. (Do it all at once)
+```{r}
+x^4.4/2.875
+## [1]    0.3478261 3273.0911040    7.3433484  923.0551563   43.7215623 3273.0911040  413.8378128
+## [8]  413.8378128  413.8378128  413.8378128
+
+```
+
+**3.d** Find the difference between the largest and smallest values of x. (This is the range. You can use max and
+min or guess a built in command.)
+
+```{r}
+diff_large_small = max(x) - min(x)
+print(diff_large_small)
+## 7
+```
+
+**4.** Your cell phone bill varies from month to month. Suppose that your bills had the following monthly amounts last
+year:
+```{r}
+bill = c(46, 33, 39, 37, 46, 30, 48, 32, 49, 35, 30, 48)
+
+```
+
+  **a.**  Run the following calculations, and explain its result: range(bill) range(bill)[2] - range(bill)[1]
+  
+```{r}
+range(bill)
+##  30 49
+
+range(bill)[2] - range(bill)[1]
+## 19
+```
+The function above range(bill) gives the maximim and minimum of the given vector.
+The function range(bill)[2]-range(bill)[1] gives the difference between the largest and the smallest cell phone bill.
+
+
+  **b.** How many months was the amount greater than $40? What percentage was this?
+  
+```{r}
+months_greaterthan_40 = sum(bill > 40)
+print(months_greaterthan_40)
+## 5
+
+bill_greaterthan_40_per = sum(bill > 40)/length(bill) * 100
+print(bill_greaterthan_40_per)
+## 41.66667
+```
+

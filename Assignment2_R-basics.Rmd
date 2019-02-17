@@ -1,0 +1,295 @@
+---
+title: "Assignment-2 Answers"
+author: "Sonal Savaliya"
+date: "October 12, 2018"
+output: html_document
+---
+
+## Part I - R Basics 
+**1. Syntax and class-typing.**
+
+**a.** For each of the following commands, either explain why they should be errors, or explain the non-erroneous result.
+```{r error=TRUE}
+vector1 <- c("5", "12", "7", "32")
+max(vector1)
+## [1] "7"
+sort(vector1)
+## [1] "12" "32" "5"  "7"
+sum(vector1)
+```
+####Ans-1a.
+
+vector1 <- c("5", "12", "7", "32") creates character vector.
+
+max(vector1), in this command, we get the maximum value of vector alphabetically.
+
+sort(vector1) sorts a vector into ascending order alphabetically.
+
+sum(vector1) gives an error because the sum of character values is not possible. sum() must need a vector of numeric values.
+
+
+**b.** For the next series of commands, either explain their results, or why they should produce errors.
+
+```{r error=TRUE}
+vector2 <- c("5",7,12)
+vector2[2] + vector2[3]
+```
+
+####Ans-1b.
+vector2 <- c("5",7,12) generates a vector and vector2[2] + vector2[3] gives a error. Here, R converts the vector2 in character type.
+
+A vector has the same type of all the elements. It does not accept different types. Thus, here vector2 tries to combine both character and numeric types, R will convert the vector into most flexible type forcefully based on the hierarchy of R's vector types which is logical->integer->numeric->complex->character.
+
+```{r}
+dataframe3 <- data.frame(z1="5",z2=7,z3=12)
+dataframe3[1,2] + dataframe3[1,3]
+##[1] 19
+```
+
+dataframe3 <- data.frame(z1="5",z2=7,z3=12) creates table with single row in which z1, z2 and z3 are columns' header name and 5, 7 and 12 are values of those columns respectively.
+
+dataframe3[1,2] + dataframe3[1,3] adds 7 and 12 and gives 19. Where, dataframe3[1,2] means 1st row and 2nd column value which is 7. dataframe3[1,3] means 1st row and 3rd column value which is 12 here.
+
+
+```{r error=TRUE}
+list4 <- list(z1="6", z2=42, z3="49", z4=126)
+list4[[2]]+list4[[4]]
+## [1] 168
+list4[2]+list4[4]
+```
+
+list4 <- list(z1="6", z2=42, z3="49", z4=126) creates a list with "6", 42, "49" and 126 with tag names, z1, z2, z3 and z4 respectively.
+
+list4[[2]]+list4[[4]] gives sum of 42 and 126. In the list to retrieve the value, we need to use [[]]
+
+list4[2]+list4[4] gives an error because of indexing with single []. It gives us sublist, not the content inside the component.
+
+**2.**
+mtcars, another dataset under the datasets library in R, was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models). Note: Although both are about cars,  mtcars is a different dataset than the mpg dataset we worked with in the class.
+
+**a.** What is the type of mtcars? Also is it a data frame?
+
+####Ans-2a
+
+```{r}
+mtcars
+typeof(mtcars)
+## [1] "list"
+```
+
+```{r}
+is.data.frame(mtcars)
+## [1] TRUE
+```
+
+**b.** How many rows and columns does mtcars have?
+
+####Ans-2b
+```{r}
+nrow(mtcars)
+## [1] 32
+ncol(mtcars)
+## [1] 11
+```
+
+**c.** What are the names of the columns of mtcars?
+
+####Ans-2c
+```{r}
+colnames(mtcars)
+##  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
+```
+
+**d.** What is the value of row 5, column 7 of mtcars? What does the value signify ?
+
+####Ans-2d
+```{r}
+mtcars[5,7]
+## [1] 17.02
+```
+
+It shows that Hornet Sportabou takes 17.02 seconds from standing start to the end of the straight 1/4 mile on drag track.
+
+
+**e.** Display the second row of mtcars in its entirety.
+
+####Ans-2e
+```{r}
+mtcars[2,]
+##                 mpg  cyl  disp  hp   drat   wt    qsec   vs  am  gear carb
+## Mazda RX4 Wag   21    6   160   110  3.9   2.875  17.02  0   1    4    4
+
+```
+
+**f.** Explain what this command does by running it on your data and examining the object.
+
+```{r}
+mydata<- mtcars
+names(mydata) <- c("mileage","cylinder",seq(0,8))
+
+```
+
+####Ans-2f
+mydata<- mtcars creates a new variable "mydata" and assign the mtcars dataset.
+
+names(mydata) <- c("mileage","cylinder",seq(0,8)) changes the mydata's default column names to mileage, cylinder, 0,1,2,3,4,5,6,7,8.
+
+**g.** In engines, engine size is evaluated by the total volume of its cylinders and it is referred to as displacement. The larger the displacement (hence the engine size), the more power the engine is likely to produce. To compare engines that are in different sizes we look at the engine power (hp) it generates (in horse power) for unit discplacement (in liter). In the dataset, engine power is under hp column and engine displacement is under disp column. However the challenge is that in the dataset displacement (disp) is given in cubic inches. You first need to convert it to liter. To do that, first calculate the displacement in liter by considering that 1 cubic inch is roughly 0.0163871 liters.
+
+####Ans-2g
+```{r}
+disp_l = round(mtcars$disp * 0.0163871, 2)
+hp_over_displ= mtcars$hp/disp_l 
+mtcars2=data.frame(mtcars, hp_over_displ)
+mtcars2
+```
+
+**h.** Next, assign these values to a variable called disp_l and add this vector as a column to your data (mydata)
+
+####Ans-2h
+```{r}
+mydata$disp_l <- hp_over_displ
+mydata
+```
+
+**3.** Working with functions and operators.
+
+The colon operator will create a sequence of integers in order. It is a special case of the function seq() which you saw earlier in this assignment. Using the help command ?seq to learn about the function, design an expression that will give you the sequence of numbers from 1 to 10000 in increments of 372. Design another that will give you a sequence between 1 and 10000 that is exactly 50 numbers in length.
+The function rep() repeats a vector some number of times. Explain the difference between rep(1:3, times=3) and rep(1:3, each=3).
+
+####Ans-3
+
+```{r}
+seq(1, 10000, by = 372)
+##  [1]    1  373  745 1117 1489 1861 2233 2605 2977 3349 3721 4093 4465 4837 5209 5581 5953 6325 6697 7069 7441
+## [22] 7813 8185 8557 8929 9301 9673
+```
+
+```{r}
+seq(1, 10000,length.out = 50)
+## [1]     1.0000   205.0612   409.1224   613.1837   817.2449  1021.3061  1225.3673  1429.4286  1633.4898
+## [10]  1837.5510  2041.6122  2245.6735  2449.7347  2653.7959  2857.8571  3061.9184  3265.9796  3470.0408
+## [19]  3674.1020  3878.1633  4082.2245  4286.2857  4490.3469  4694.4082  4898.4694  5102.5306  5306.5918
+## [28]  5510.6531  5714.7143  5918.7755  6122.8367  6326.8980  6530.9592  6735.0204  6939.0816  7143.1429
+## [37]  7347.2041  7551.2653  7755.3265  7959.3878  8163.4490  8367.5102  8571.5714  8775.6327  8979.6939
+## [46]  9183.7551  9387.8163  9591.8776  9795.9388 10000.0000
+```
+
+
+```{r}
+rep(1:3, times=3)
+## [1] 1 2 3 1 2 3 1 2 3
+rep(1:3, each=3)
+## [1] 1 1 1 2 2 2 3 3 3
+```
+
+rep(1:3, times=3) repeats entire vector(1:3) 3 times.
+
+Whereas in this rep(1:3, each=3), each element of the vector(1:3) is repeated 3 times.
+
+
+##Part II - Descriptive Stats
+
+Yet another dataset for cars! MASS library has a dataset called Cars93 for 93 cars with model year 1993. Load the dataset following the instructions below.
+
+```{r}
+library(MASS)
+data(Cars93)
+```
+
+Begin by examining the data frame with the command View(Cars93) to understand the underlying object. You will need to use functions and other commands to extract elements for this assignment.
+
+**1.** True or False: Your instructor likes cars. A lot!
+
+#### Ans-1
+TRUE
+
+**2.** Obtain a summary() of the full data structure. Can you tell from this how many rows are in the data? If so, say how; if not, use another method to obtain the number of rows.
+
+#### Ans-2
+```{r}
+summary(Cars93)
+## Manufacturer     Model         Type      Min.Price         Price         Max.Price       MPG.city    
+## Chevrolet: 8    100    : 1   Compact:16   Min.   : 6.70   Min.   : 7.40   Min.   : 7.9   Min.   :15.00  
+## Ford     : 8    190E   : 1   Large  :11   1st Qu.:10.80   1st Qu.:12.20   1st Qu.:14.7   1st Qu.:18.00  
+##  Dodge    : 6    240    : 1   Midsize:22   Median :14.70   Median :17.70   Median :19.6   Median :21.00  
+##  Mazda    : 5    300E   : 1   Small  :21   Mean   :17.13   Mean   :19.51   Mean   :21.9   Mean   :22.37  
+##  Pontiac  : 5    323    : 1   Sporty :14   3rd Qu.:20.30   3rd Qu.:23.30   3rd Qu.:25.3   3rd Qu.:25.00  
+##  Buick    : 4    535i   : 1   Van    : 9   Max.   :45.40   Max.   :61.90   Max.   :80.0   Max.   :46.00  
+##  (Other)  :57    (Other):87                                                                              
+##   MPG.highway                  AirBags   DriveTrain  Cylinders    EngineSize      Horsepower   
+##  Min.   :20.00   Driver & Passenger:16   4WD  :10   3     : 3   Min.   :1.000   Min.   : 55.0  
+##  1st Qu.:26.00   Driver only       :43   Front:67   4     :49   1st Qu.:1.800   1st Qu.:103.0  
+##  Median :28.00   None              :34   Rear :16   5     : 2   Median :2.400   Median :140.0  
+##  Mean   :29.09                                      6     :31   Mean   :2.668   Mean   :143.8  
+##  3rd Qu.:31.00                                      8     : 7   3rd Qu.:3.300   3rd Qu.:170.0  
+##  Max.   :50.00                                      rotary: 1   Max.   :5.700   Max.   :300.0  
+                                                                                               
+##       RPM        Rev.per.mile  Man.trans.avail Fuel.tank.capacity   Passengers        Length     
+##  Min.   :3800   Min.   :1320   No :32          Min.   : 9.20      Min.   :2.000   Min.   :141.0  
+##  1st Qu.:4800   1st Qu.:1985   Yes:61          1st Qu.:14.50      1st Qu.:4.000   1st Qu.:174.0  
+##  Median :5200   Median :2340                   Median :16.40      Median :5.000   Median :183.0  
+##  Mean   :5281   Mean   :2332                   Mean   :16.66      Mean   :5.086   Mean   :183.2  
+##  3rd Qu.:5750   3rd Qu.:2565                   3rd Qu.:18.80      3rd Qu.:6.000   3rd Qu.:192.0  
+##  Max.   :6500   Max.   :3755                   Max.   :27.00      Max.   :8.000   Max.   :219.0  
+                                                                                                 
+##    Wheelbase         Width        Turn.circle    Rear.seat.room   Luggage.room       Weight         Origin  
+##  Min.   : 90.0   Min.   :60.00   Min.   :32.00   Min.   :19.00   Min.   : 6.00   Min.   :1695   USA    :48  
+##  1st Qu.: 98.0   1st Qu.:67.00   1st Qu.:37.00   1st Qu.:26.00   1st Qu.:12.00   1st Qu.:2620   non-USA:45  
+##  Median :103.0   Median :69.00   Median :39.00   Median :27.50   Median :14.00   Median :3040               
+##  Mean   :103.9   Mean   :69.38   Mean   :38.96   Mean   :27.83   Mean   :13.89   Mean   :3073               
+##  3rd Qu.:110.0   3rd Qu.:72.00   3rd Qu.:41.00   3rd Qu.:30.00   3rd Qu.:15.00   3rd Qu.:3525               
+##  Max.   :119.0   Max.   :78.00   Max.   :45.00   Max.   :36.00   Max.   :22.00   Max.   :4105               
+##                                                  NA's   :2       NA's   :11                                 
+##             Make   
+##  Acura Integra: 1  
+##  Acura Legend : 1  
+##  Audi 100     : 1  
+##  Audi 90      : 1  
+##  BMW 535i     : 1  
+##  Buick Century: 1  
+##  (Other)      :87
+
+```
+
+YES!
+There are total 93 cars based on Man.trans.val varibale in which NO:32 + Yes:61. 
+
+
+**3.** What is the mean and median price of a car with a rear-wheel drive train? Which one is a better measure for centrality? What is the standard deviation for a similar car?
+
+#### Ans-3
+
+```{r}
+rear_drive_train = Cars93[Cars93$DriveTrain == "Rear",]
+mean(rear_drive_train$Price)
+## [1] 28.95
+median(rear_drive_train$Price)
+## [1] 26.85
+hist(rear_drive_train$Price)
+
+```
+
+Median is better because the graph shows that distribution skewed to the right, so there are relatively more cars priced to the right side.
+
+```{r}
+sd(rear_drive_train$Price)
+## [1] 13.06354
+```
+
+
+**4.** What is the minimum horsepower of all cars with capacity for 7 passengers? With a capacity of at least 6 passengers?
+
+#### Ans-4
+
+```{r}
+min(Cars93[Cars93$Passengers == 7,]$Horsepower)
+## 109
+
+min(Cars93[Cars93$Passengers == 6,]$Horsepower)
+## 100
+
+```
+
+
+

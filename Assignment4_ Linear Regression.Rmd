@@ -1,0 +1,147 @@
+---
+title: "Assignment_4_Answers"
+author: "Sonal Savaliya"
+date: "November 24, 2018"
+output: html_document
+---
+
+```{r}
+require(lattice)
+
+baseball <- read.csv("baseball.csv")
+baseball
+```
+
+
+1. Plot a diagram to show the relationship between 'runs' and 'at_bats'. Consider 'at_bats' as the explanatory variable.
+
+#### Ans.1
+
+```{r}
+plot(runs~at_bats,data=baseball)
+m1  <- lm ( runs  ~  at_bats ,  data =  baseball )
+abline(m1)
+
+```
+
+Relationship between runs and at_bats have a positive linear. 
+
+2. Can you quantify this relationship ?
+
+#### Ans.2
+
+```{r}
+cor(baseball$runs,baseball$at_bats)
+## [1] 0.610627
+```
+
+cor() computes the correlation coefficient. Here, correlation coefficient value is 0.6. So, it means runs and at_bats has slight strong linear relationship which is near to positive 1.
+
+
+3. What is the linear function that describes the relationship?
+
+```{r}
+m1  <- lm ( runs ~ at_bats, data = baseball )
+m1
+summary(m1)
+```
+#### Ans.3
+
+$$ runs = -2789.24 + 0.6305 * atbats $$
+4. Fit another model that uses homeruns to predict runs. Using the estimates from the R output, write the equation of the regression line. What does the slope tell us in the context of the relationship between success of a team and its home runs?
+
+The abline can help you predict y at any value x. If the prediction is done for a value of x that is outside of the range of the dataset, what is the process is called ? What is the problem with it ?
+
+#### Ans.4
+
+```{r}
+m2 = lm ( runs  ~  homeruns ,  data =  baseball )
+summary(m2)
+cor(baseball$runs,baseball$homeruns)
+```
+
+$$ runs = 415.239 + 1.835 * homeruns $$
+Slope tell us that for each homeruns a team gets, they gets increment of runs by 1.835 times. More homeruns give more run to the team so, it is benefitial for the team.
+
+```{r}
+
+plot(baseball$ runs  ~  baseball$ homeruns )
+abline(m2)
+```
+```{r}
+min(baseball$homeruns); max(baseball$homeruns)
+## [1] 91
+## [1] 222
+```
+
+If the prediction is done for a value of x that is outside of the range of the dataset, the process call extrapolation. Predicting the response to an input which lies outside of the range of the values of the predictor variable used to fit the model. 
+Here, the problem is that if we use our linear regression equation to find predicted value outside of the range 91 to 222 homeruns, then we do not know the relationship between run and home runs is linear or not, outside of this range.
+
+
+5. If a team manager saw the least squares regression line and not the actual data, how many runs would he or she predict for a team with 5,579 at_bats? Is this an overestimate or an underestimate, and by how much? In other words, what is the residual for this prediction?
+
+#### Ans.5
+
+$$ runs = -2789.24 + 0.6305 * atbats $$
+Using this linear equation: 
+
+```{r}
+runs = -2789.24 + 0.6305 * 5579
+round(runs)
+## [1] 728
+```
+
+A team manager get 728 runs based the least squares regression line for 5,579 at_bats.
+In Actual data, Philadelphia Phillies team has 713 runs for 5,579 at_bats. 
+It means, this is an overestimate with 728-713 = 15 runs.
+
+Residual= Actual y value - estimeted y value
+        = 713 - (-2789.24 + 0.6305 * 5579)
+        = 713 - 728
+        = - 15
+It means for Philadelphia Phillies with at 5579 at_bats, actual y value below 15 to the estimate. 
+
+
+6. Choose another traditional variable from baseball daga that you think might be a good predictor of runs. Produce a scatterplot of the two variables and fit a linear model. At a glance, does there seem to be a linear relationship?
+
+#### Ans.6
+
+Hits is a good predictor of runs. But it already mentioned in previous question. So let's choose different variable.
+
+```{r}
+m3 = lm ( runs  ~  new_obs ,  data =  baseball )
+plot(baseball$ runs  ~  baseball$ new_obs )
+abline(m3)
+cor(baseball$ runs, baseball$ new_obs)
+## [1] 0.9669163
+```
+
+
+Yes, at a glace, it seems to be a linear and positive relationship.
+
+
+7. How does this relationship compare to the relationship between runs and at_bats? Use the R2 values from the two model summaries to compare. Does your variable seem to predict runs better than at_bats? How can you tell?
+
+#### Ans.7
+```{r}
+summary(m1)
+summary(m3)
+
+#R2 for runs ~ at_bats
+summary(m1)$r.squared
+## [1] 0.3728654
+cor(baseball$runs,baseball$at_bats)
+## [1] 0.610627
+
+#R2 for runs ~ new_obs
+summary(m3)$r.squared
+## [1] 0.9349271
+cor(baseball$ runs, baseball$ new_obs) 
+## [1] 0.9669163
+```
+
+Here in the R2 value. Runs and new_obs relationship's R2 value is 0.93 which is almost 1. Whereas runs and at_bats relationship's R2 value is 0.37 which does not quntify linear relationship.Thus, we can say, runs and new_obs model predict runs better.
+
+new_obs R2 = 0.93 with runs R=0.97 is greater than at_bats R2 (= 0.37) with runs (R=0.61), hits is a better predictor for runs than at_bats.
+
+
